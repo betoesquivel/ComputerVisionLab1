@@ -20,22 +20,6 @@ def calculate_correlation (h1, h2):
     v2 = math.sqrt((sumxx-sumx*sumx/n) * (sumyy-sumy*sumy/n))
     return abs (v1 / v2)
 
-def compare_correlation (h1, h2):
-    "Work out the correlation between two histograms"
-    sumx = sumy = sumxx = sumyy = sumxy = 0.0
-    n = len (h1)
-    for i in range (0, n):
-        v1 = float (h1[i])
-        v2 = float (h2[i])
-        sumx += v1
-        sumy += v2
-        sumxx += v1 * v1
-        sumxy += v1 * v2
-        sumyy += v2 * v2
-    v1 = sumxy - sumx * sumy / n
-    v2 = math.sqrt((sumxx-sumx*sumx/n) * (sumyy-sumy*sumy/n))
-    return abs (v1 / v2)
-
 def rgb_histograms (im):
     """Workout one histogram for each color
     in the image"""
@@ -72,22 +56,23 @@ probe_hist = rgb_merged_histogram(im_probe)
 # Load image one by one, get their histogram and compare it to the probe image.
 for file in params[2:]:
     if file != probe_file:
-        print "Processing", file
+        # print "Processing", file
         im = cv2.imread(file) 
         test_hist = rgb_merged_histogram(im)
 
         correlation = calculate_correlation(test_hist, probe_hist)
 
-        print '{0} correlation is: {1}'.format(file, correlation)
+        # print '{0} correlation is: {1}'.format(file, correlation)
         if best_img_val < correlation:
             best_img_val = correlation
             best_img_file = file
 
 
 # Print results
-print 'Best image is {0} with correlation: {1}'.format(best_img_file, best_img_val)
-cv2.imshow('Probe', im_probe)
-im_result = cv2.imread(best_img_file)
-cv2.imshow('Match', im_result)
-cv2.waitKey(0)
+# print 'Best image is {0} with correlation: {1}'.format(best_img_file, best_img_val)
+# cv2.imshow('Probe', im_probe)
+# im_result = cv2.imread(best_img_file)
+# cv2.imshow('Match', im_result)
+# cv2.waitKey(0)
+print best_img_file
 
