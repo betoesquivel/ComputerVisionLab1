@@ -1,0 +1,233 @@
+<HTML>
+<HEAD>
+  <STYLE TYPE="text/css">
+  H1 {weight: bold; font-family: Helvetica, Arial, sans-serif; color: red}
+  H2 {weight: bold; font-family: Helvetica, Arial, sans-serif}
+  H3 {weight: bold; font-family: Helvetica, Arial, sans-serif; color: blue}
+  BODY {background: white}
+  TABLE {display: inline-table}
+  TH {background-color: #c0c0ff}
+  A {text-decoration: none}
+  A:hover {text-decoration: underline}
+  pre {padding: 10px; margin: 10px;
+    background: #e0e0e0; border: 1px solid #a0a0a0;}
+    </STYLE>
+  <TITLE>CE866 Laboratory: Assignment 1</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff" VLINK="#a0a0a0">
+<TABLE WIDTH="100%" CELLPADDING="10" BORDER="0">
+<TR>
+<TD ALIGN="left" VALIGN="top" WIDTH="180" BGCOLOR="#c0c0ff">
+  <H2><CENTER>Computer&nbsp;Vision<BR>CE316 &amp; CE866</CENTER></H2>
+  <P><HR>
+
+  <P>TEACHING</A><BR>
+  <A HREF="index.html">Main page</A><BR>
+  <A HREF="about.html">About the module</A><BR>
+  <A HREF="http://www.essex.ac.uk/modules/default.aspx?coursecode=CE316&level=6&period=AU&yearofcourse=15">CE316 Syllabus <EM>etc</EM></A><BR>
+  <A HREF="http://www.essex.ac.uk/modules/default.aspx?coursecode=CE866&level=7&period=AU&yearofcourse=15">CE866 Syllabus <EM>etc</EM></A><BR>
+
+  <P>LEARNING</A><BR>
+  <A HREF="notes.pdf">Notes</A><BR>
+  <A HREF="worksheets.html">Worksheets</A><BR>
+  <A HREF="index.html">Quizzes</A><BR>
+  <A HREF="index.html#assignments">Assignments</A><BR>
+  <A HREF="assessment-criteria.html">Assessment criteria</A><BR>
+  <A HREF="https://orb.essex.ac.uk/secure/exampapers.aspx?course=ce316">CE316 Exams</A><BR>
+  <A HREF="https://orb.essex.ac.uk/secure/exampapers.aspx?course=ce866">CE866 Exams</A><BR>
+
+  <P>RESOURCES</A><BR>
+  <A HREF="vision-resources.html">Vision</A><BR>
+  <A HREF="linux-resources.html">Linux</A><BR>
+
+  <P>SOFTWARE</A><BR>
+  <A HREF="http://www.opencv.org/">OpenCV</A><BR>
+  <A HREF="http://rsbweb.nih.gov/ij/">ImageJ</A><BR>
+  <A HREF="http://vase.essex.ac.uk/software/eve.html">EVE</A><BR>
+</TD>
+<TD VALIGN=top BGCOLOR="white">
+<H1>CE866 Laboratory: Assignment 1</H1>
+
+<H2>Introduction</H2>
+
+<P>You will recall the discussion in the lecture notes of <TT>cbir</TT>, a
+program that performs content-based image retrieval.  You will also remember
+that lectures discussed how vision algorithms are evaluated and compared.
+This assignment brings these two topics together: you are required to write a
+content-based image retrieval program of your own (<B>not</B> using exactly
+the same algorithm as the program in the notes) and compare its performance
+with that of <TT>cbir</TT>.  These two stages in the assignment are described
+in more detail below.</P>
+
+<H2>Content-based image retrieval</H2>
+
+<P>The <TT>cbir</TT> program in the notes calculates the histogram of each
+image (<EM>i.e.</EM>, there is one histogram, even if the image is a colour
+one).  You are free to use any other viable algorithm that you can conceive
+&mdash; the purpose of the assignment is not to out-perform <TT>cbir</TT>,
+simply to have an alternative algorithm that you can compare with it.  If you
+really cannot think of an algorithm to use, speak to a demonstrator who will
+suggest one.</P>
+
+<P>Having chosen an algorithm, you are required to write a program that
+operates in the same way as <TT>cbir</TT>: your program must take a number of
+image filenames on its command line, the first of which is the "probe image"
+that you are trying to find in the other images supplied on the command line.
+<STRONG>Your program should generate precisely one line of output</STRONG>,
+the name of the image that best matches the probe image.  Your program must
+explicitly ignore the case when the test image has the same name as the probe
+image &mdash; if you seem to be getting perfect results, you have probably
+forgotten to do this.  For inspiration, the <TT>cbir</TT> program discussed in
+lectures is presented in the <A HREF="notes.pdf">lecture notes</A>.</P>
+
+<P>You may implement your program in any of C, C++ or Python, and it
+must use the OpenCV library.  You are free to use any OpenCV routines in your
+program.</P>
+
+<UL>
+
+<LI><P>If you are using C or C++, you should supply a <TT>Makefile</TT> that
+compiles your source code, generating an executable program called
+<TT>mycbir</TT> &mdash; it must have that name to work with the test harness
+discussed later in this assignment.</P></LI>
+
+<LI><P>If you are using Python, your program must be called <TT>mycbir</TT>
+(<EM>i.e.</EM>, with no <TT>.py</TT> extension).</P></LI> </UL>
+
+<P>Your software must build and run under Linux on the machines in Computer
+Lab&nbsp;1.</P>
+
+
+<H2>Comparing and assessing algorithms</H2>
+
+<P>The principles of evaluating a single algorithm and comparing the
+performances of several algorithms is described in the lecture notes.  It is
+not especially difficult to perform this kind of thing by hand &mdash; but it
+is very tedious.  For this reason, evaluations are usually performed using
+programs known as <EM>test harnesses</EM>.  For the second part of the
+assignment, you will use a test harness and some image files to evaluate
+<TT>mycbir</TT> and compare its performance with <TT>cbir</TT>.</P>
+
+<P>The particular test harness you will use is <B>FACT</B> ("Framework for
+Algorithm Comparison and Testing").  You need to <A
+HREF="ce866-ass1.zip">download FACT and the relevant data files</A>.  FACT
+separates the stages of executing a program on a series of tests and analyzing
+the results.  This is because the execution stage is normally much slower than
+the analysis one and, as we shall see, there are several analyses that one
+might like to perform.  The execution stage produces a <EM>transcript</EM>
+file, and all the analysis stages use transcript files as input.</P>
+
+<P>The file <TT>ass1.fact</TT> contains the tests that are to be executed; it
+is human-readable and you are welcome to look at it.  You should be able to
+run the test on <TT>mycbir</TT> using the command
+
+<PRE>
+./fact execute ass1
+</PRE>
+
+The <TT>execute</TT> tells FACT to run the program on the test script
+<TT>ass1.fact</TT> and output a transcript; you can use <TT>run</TT> rather
+than <TT>execute</TT> if you prefer.  (Note that FACT uses the file
+<TT>interface.py</TT> as an interface to the program being tested.)  When you
+execute the above command, FACT will write output to your terminal window.
+The first line contains some identification information, used for checking in
+the analysis stages, followed by a single line per test.  These lines are
+actually the transcript.</P>
+
+<P>To create a transcript file, you simply use command-line
+redirection to make these lines go to a file
+
+<PRE>
+./fact execute ass1 &gt; mycbir.res
+</PRE>
+
+and twiddle your thumbs while it runs.  Having generated the transcript, the
+next stage is to analyze it, either in isolation or by comparing it with other
+algorithms.</P>
+
+<P>Analysing the transcript file is both quick and easy:
+
+<PRE>
+./fact analyse mycbir.res
+</PRE>
+
+Rather than <TT>analyse</TT>, you can write <TT>analyze</TT> or <TT>anal</TT>.
+If the name of the file that you wish to analyse ends in <TT>.res</TT>, you
+can omit it.  The results of the analysis are written to your terminal window;
+you can use re-direction to save it in a file.  You will see that the output
+contains two distinct tables, one summarising error rates <EM>etc.</EM> and
+the other a confusion matrix, which shows how false positives occur.</P>
+
+<P>FACT can generate HTML rather than plain text:
+
+<PRE>
+./fact --format=html --detail=2 -H -T analyse mycbir.res > mycbir.html
+</PRE>
+
+which you may find easier to read.
+
+<P>Your next step is to compare the performance of your program,
+<TT>mycbir</TT>, with the <TT>cbir</TT> program demonstrated in lectures.  The
+transcript file from <TT>cbir</TT>, called <TT>cbir.res</TT>, is part of the
+assignment distribution that you downloaded above, and you should have
+generated <TT>mycbir.res</TT> above.  You perform the comparison using the
+command
+
+<PRE>
+./fact compare mycbir.res cbir.res
+</PRE>
+
+Again, you can get more detail by appending <TT>--detail=2</TT> to the
+command.</P>
+
+<P>Having assessed the performance of <TT>mycbir</TT> in isolation and
+compared it with that of <TT>cbir</TT>, you should insert the FACT outputs
+into the comments at the top of your program <STRONG>and explain what they
+mean</STRONG>.  This interpretation of the numerical results is an important
+part of the assignment.</P>
+
+<P>When you upload your submission, remember to upload the transcript file
+from your algorithm too.</P>
+
+
+<H2>Summary</H2>
+
+<TABLE ALIGN="center" BORDER="1" CELLPADDING="5">
+<TR><TD>Submission deadline:</TD>
+    <TD>Thursday 12<SUP>th</SUP> November at 12:59:59</TD></TR>
+<TR><TD>What to submit:</TD>
+    <TD>
+      the source code of your program<BR/>
+      any <TT>Makefile</TT> needed to compile your program<BR/>
+      the transcript file from your program<BR/>
+      <STRONG>but not the images!</STRONG>
+    </TD></TR>
+<TR><TD>Feedback returned:</TD>
+    <TD>three weeks</TD></TR>
+<TR><TD>Assessment criteria:</TD>
+    <TD>see the <A HREF="assessment-criteria.html">detailed description</A> of
+    the criteria</TD></TR>
+</TABLE>
+
+<P>Remember to identify you work with <EM>your registration number</EM>
+only.&nbsp; The coursework system allows you to upload your work as often as
+you like, so do keep uploading your files as you develop them.</P>
+
+</TD>
+</TR>
+</TABLE>
+
+<TABLE WIDTH="100%" BORDER="0"><TR>
+  <TD>
+    <FONT COLOR="#000070" SIZE="-2">Last
+    updated on 2015-10-21 10:58:46</FONT>
+  </TD>
+  <TD ALIGN="right">
+    <FONT COLOR="#000070" SIZE="-2">Web pages maintained by
+    <A HREF="http://privatewww.essex.ac.uk/~alien/">Adrian F. Clark</A>
+    [<A HREF="mailto:alien@essex.ac.uk">contact</A>]</FONT>
+    </TD>
+  </TR>
+</TABLE>
+</BODY>
+</HTML>

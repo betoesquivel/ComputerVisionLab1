@@ -78,7 +78,6 @@ for file in params[2:]:
 
         correlation = calculate_correlation(test_hist, probe_hist)
 
-        print '{0} correlation is: {1}'.format(file, correlation)
         if best_img_val < correlation:
             best_img_val = correlation
             best_img_file = file
@@ -89,5 +88,3 @@ print 'Best image is {0} with correlation: {1}'.format(best_img_file, best_img_v
 cv2.imshow('Probe', im_probe)
 im_result = cv2.imread(best_img_file)
 cv2.imshow('Match', im_result)
-cv2.waitKey(0)
-
