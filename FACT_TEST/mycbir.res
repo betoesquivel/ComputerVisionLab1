@@ -1,4 +1,4 @@
-transcript_begin ass1 0.00 classification 2015-10-29 12:49:37.452794
+transcript_begin ass1 0.00 classification 2015-11-05 12:43:47.193482
 result ass1-001 gapple S gapple
 result ass1-002 gapple S gapple
 result ass1-003 gapple S gapple
@@ -25,20 +25,20 @@ result ass1-023 orange S orange
 result ass1-024 orange S orange
 result ass1-025 orange S orange
 result ass1-026 orange S orange
-result ass1-027 orange S grapefruit
+result ass1-027 orange S gfruit
 result ass1-028 orange S orange
 result ass1-029 orange S orange
-result ass1-030 orange S grapefruit
-result ass1-031 gfruit F failure
-result ass1-032 gfruit F failure
-result ass1-033 gfruit F failure
-result ass1-034 gfruit F failure
-result ass1-035 gfruit F failure
-result ass1-036 gfruit F failure
-result ass1-037 gfruit F failure
-result ass1-038 gfruit F failure
-result ass1-039 gfruit F failure
-result ass1-040 gfruit F failure
+result ass1-030 orange S gfruit
+result ass1-031 gfruit S gfruit
+result ass1-032 gfruit S gfruit
+result ass1-033 gfruit S gfruit
+result ass1-034 gfruit S gfruit
+result ass1-035 gfruit S gfruit
+result ass1-036 gfruit S gfruit
+result ass1-037 gfruit S gfruit
+result ass1-038 gfruit S gfruit
+result ass1-039 gfruit S gfruit
+result ass1-040 gfruit S gfruit
 result ass1-041 chili S chili
 result ass1-042 chili S chili
 result ass1-043 chili S chili
@@ -79,4 +79,4 @@ result ass1-077 tomato S chili
 result ass1-078 tomato S tomato
 result ass1-079 tomato S tomato
 result ass1-080 tomato S tomato
-transcript_end 0.043532
+transcript_end 0.038027
