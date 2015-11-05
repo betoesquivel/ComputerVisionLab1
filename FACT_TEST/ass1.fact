@@ -9,7 +9,7 @@ author    alien@essex.ac.uk  Adrian F. Clark
 version   0.00
 tests     80
 purpose   This script tests the ability to distinguish several classes of \
-          object -- green apple, red apple, orange, grapefruit, pear, \
+          object -- green apple, red apple, orange, gfruit, pear, \
 	  banana, tomato.
 
 test ass1-001 gapple-01.png gapple
