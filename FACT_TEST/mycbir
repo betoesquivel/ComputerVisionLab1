@@ -2,20 +2,88 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # Content-based image retrieval using RGB histograms, and
 # showcasing the function calcHist() from OpenCV.
+'''
+Student Registration Number: 1500921
+ ALGORITHM USED
+ Adrian Clark described an algorithm in which histograms for Red, Green, and Blue
+ where concatenated into one huge histogram. This then allowed for comparison of the
+ histograms using their correlation. The modification done to the algorithm was to 
+ add some cropping to the images so that only a portion of the image was used for 
+ comparison.
 
-# The algorithm was described by Adrian Clark and implemented
-# by me on the first Computer Vision assignment.
+ How to crop?
+ The HoughCircles where calculated using the openCV function to do that. Then, the
+ centermost circle was found, and its radius was used to crop the image. The cropping
+ was done from the center of the image, although, in retrospect it would have been
+ better to do the cropping from the center of the circle. This would have captured the
+ region of interest better.
 
-# The purpose of this assignment is to get familiar with OpenCV
-# for a common computer vision task.
+ MYCBIR ANALYSED (./fact analyse mycbir.res)
+ My software is the most accurate with chili, probably because it is one of the
+ images that are the most centered. I now see, that cropping from the center of the
+ circle found instead of from the center of the image, would have helped me compare
+ only the targets. It would have also compared position, since I would have cropped
+ both images from the same position.
+
+ So, for example, in my table, I have 6 bananas correctly identified, whereas, I have
+ 4 False Positives. This means that I found something in the image that wasn't there.
+ With the confusion matrix below, you can see that I found a red apple instead of a
+ banana.
+
+ Error rates calculated from mycbir.res
+#  tests      TP      TN      FP      FN accuracy   recall precision specificity class
+      10       6       0       4       0     0.60     1.00      0.60        0.00 banana
+      10       8       0       2       0     0.80     1.00      0.80        0.00 chili
+      10       0       0      10       0     0.00     0.00      0.00        0.00 gapple
+      10       0       0      10       0     0.00     0.00      0.00        0.00 gfruit
+      10       4       0       6       0     0.40     1.00      0.40        0.00 orange
+      10       5       0       5       0     0.50     1.00      0.50        0.00 pear
+      10       1       0       9       0     0.10     1.00      0.10        0.00 rapple
+      10       3       0       7       0     0.30     1.00      0.30        0.00 tomato
+      80      27       0      53       0     0.34     1.00      0.34        0.00 overall
+
+Confusion matrix calculated from mycbir.res
+My algorithm works badly for almost all fruits. For example, in the confusion matrix
+you can see how when I was looking for a banana, only 6 times I found a banana. The
+other 4 I found a red apple. This was probably due to the excesive cropping that I did
+and how it probably missed the banana, so I was running a histogram on the background
+of the image only.
+                                          expected
+   actual   banana    chili   gapple   gfruit   orange     pear   rapple   tomato
+   banana        6        1        0        0        0        0        0        0
+    chili        0        8        4        6        5        5        6        5
+   gapple        0        0        0        1        0        0        1        1
+   gfruit        0        0        0        0        1        0        0        0
+   orange        0        0        1        0        4        0        0        0
+     pear        0        0        5        2        0        5        2        1
+   rapple        4        1        0        1        0        0        1        0
+   tomato        0        0        0        0        0        0        0        3
+
+# Comparison of mycbir.res and cbir.res
+
+ Z-score  class
+   -2.25  banana
+    0.00  chili
+   -4.17  gapple
+   -8.10  gfruit
+   -1.50  orange
+   -2.25  pear
+   -2.25  rapple
+   -4.17  tomato
+ The z-score clearly states the difference between Adrian's algorithm and this new one.
+ And this problem is by a lot. The main problem was excessive cropping. Negative values
+ mean that my algorithm was that much worse than adrian's.
+'''
+
 import cv2, sys, math
 import cv2.cv as cv
 import numpy as np
 
 def get_crop_suggestion(img_name):
     '''Use the hough transform to identify circles in the img.
-    then find the largest circle identified and crop the image
-    to the smallest rectangle that encloses that circle.
+    then find the most centered circle identified and crop the image
+    to the smallest rectangle that encloses that circle, in the center
+    of the image.
     Return the cropped image.'''
     img = cv2.imread(img_name,0)
     img = cv2.GaussianBlur(img, (5,5), 0)
@@ -26,24 +94,32 @@ def get_crop_suggestion(img_name):
     circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, 20, param1=50,
             param2=30, minRadius=0, maxRadius=0)
 
-    largest = [0,0,0]
+    img = cv2.imread(img_name)
+    h, w, ch = img.shape
+    c = [w/2, h/2] # the center of the image
+
+    smallest = [256,256,256]
+    centered = [0,0,0]
 
     for i in circles[0,:]:
-        largest = i if i[2] > largest[2] else largest
+        smallest = i if i[2] > smallest[2] else smallest
+        displacement = pow( pow((c[0]-int(i[0])),2) +
+                            pow((c[1]-int(i[1])),2), 0.5 )
+        c_displacement = pow( pow((c[0]-int(centered[0])),2) +
+                              pow((centered[1]-int(i[1])),2), 0.5 )
 
-    min_x = largest[0] - largest[2]
-    min_y = largest[1] - largest[2]
-    max_x = largest[0] + largest[2]
-    max_y = largest[1] + largest[2]
+        centered = i if displacement < c_displacement else centered
 
-    img = cv2.imread(img_name)
-    h, w, c = img.shape
+    min_x = int(c[0]) - centered[2]
+    min_y = int(c[1]) - centered[2]
+    max_x = c[0] + centered[2]
+    max_y = c[1] + centered[2]
 
-    min_x = 0 if min_x < 0 else min_y
-    min_y = 0 if min_y < 0 else min_x
+    min_x = 0 if min_x < 0 else min_x
+    min_y = 0 if min_y < 0 else min_y
 
-    max_x = h if max_x > h else max_y
-    max_y = w if max_y > w else max_x
+    max_x = w if max_x > w else max_x
+    max_y = h if max_y > h else max_y
 
     return min_y, max_y, min_x, max_x
 
@@ -60,7 +136,7 @@ def calculate_correlation (h1, h2):
         sumxy += v1 * v2
         sumyy += v2 * v2
     v1 = sumxy - sumx * sumy / n
-    v2 = math.sqrt((sumxx-sumx*sumx/n) * (sumyy-sumy*sumy/n))
+    v2 = math.sqrt((sumxx-sumx*sumx/float(n)) * (sumyy-sumy*sumy/float(n)))
     return abs (v1 / v2)
 
 def rgb_histograms (im):

@@ -34,43 +34,51 @@ cimg = cv2.cvtColor(im_probe, cv2.COLOR_GRAY2BGR)
 circles = cv2.HoughCircles(im_probe, cv.CV_HOUGH_GRADIENT, 1, 20, param1=50, param2=30,
         minRadius=0, maxRadius=0)
 
+h, w = im_probe.shape
+c = [ w/2, h/2 ]
 circles = np.uint16(np.around(circles))
 largest = [0,0,0]
 smallest = [256, 256, 256]
-
+center = [0,0,0]
 for i in circles[0,:]:
-    largest = i if i[2] > largest[2] else largest
-    smallest = i if i[2] < smallest[2] else smallest
+    #largest = i if i[2] > largest[2] else largest
+    #smallest = i if i[2] < smallest[2] else smallest
+    displacement = pow( pow((c[0]-int(i[0])),2) + pow((c[1]-int(i[1])),2), 0.5 )
+    c_displacement = pow( pow((c[0]-int(center[0])),2) + pow((center[1]-int(i[1])),2), 0.5 )
+    center = i if displacement < c_displacement else center
 
-medium = [0,0,0]
-difference = largest[2]*1.0 - smallest[2]
-for i in circles[0,:]:
-    i_relative = abs((i[2] - smallest[2])/difference - .5)
-    m_relative = abs((medium[2] - smallest[2])/difference - .5)
-    medium = i if i_relative <= m_relative else medium
+#medium = [0,0,0]
+#difference = largest[2]*1.0 - smallest[2]
+#for i in circles[0,:]:
+    #i_relative = abs((i[2] - smallest[2])/difference - .5)
+    #m_relative = abs((medium[2] - smallest[2])/difference - .5)
+    #medium = i if i_relative <= m_relative else medium
 
-cv2.circle(cimg, (largest[0], largest[1]), largest[2], (0,255,0), 2)
-cv2.circle(cimg,(largest[0],largest[1]),2,(0,0,255),3)
+#cv2.circle(cimg, (largest[0], largest[1]), largest[2], (0,255,0), 2)
+#cv2.circle(cimg,(largest[0],largest[1]),2,(0,0,255),3)
 
-cv2.circle(cimg, (smallest[0], smallest[1]), smallest[2], (0,255,0), 2)
-cv2.circle(cimg,(smallest[0],smallest[1]),2,(0,0,255),3)
+#cv2.circle(cimg, (smallest[0], smallest[1]), smallest[2], (0,255,0), 2)
+#cv2.circle(cimg,(smallest[0],smallest[1]),2,(0,0,255),3)
 
-cv2.circle(cimg, (medium[0], medium[1]), medium[2], (0,255,0), 2)
-cv2.circle(cimg,(medium[0],medium[1]),2,(0,0,255),3)
+#cv2.circle(cimg, (medium[0], medium[1]), medium[2], (0,255,0), 2)
+#cv2.circle(cimg,(medium[0],medium[1]),2,(0,0,255),3)
 
-min_x = largest[0] - largest[2]
-min_y = largest[1] - largest[2]
-max_x = largest[0] + largest[2]
-max_y = largest[1] + largest[2]
+cv2.circle(cimg, (center[0], center[1]), center[2], (0,255,0), 2)
+cv2.circle(cimg,(center[0],center[1]),2,(0,0,255),3)
+
+min_x = int(c[0]) - center[2]
+min_y = int(c[1]) - center[2]
+max_x = c[0] + center[2]
+max_y = c[1] + center[2]
 
 img = cv2.imread(probe_file)
-h, w, c = img.shape
+h, w, ch = img.shape
 
-min_x = 0 if min_x < 0 else min_y
-min_y = 0 if min_y < 0 else min_x
+min_x = 0 if min_x < 0 else min_x
+min_y = 0 if min_y < 0 else min_y
 
-max_x = h if max_x > h else max_y
-max_y = w if max_y > w else max_x
+max_x = w if max_x > w else max_x
+max_y = h if max_y > h else max_y
 
 cropped = img[min_y:max_y, min_x:max_x]
 cv2.imshow('detected circles', cropped)
