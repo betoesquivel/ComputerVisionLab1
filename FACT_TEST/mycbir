@@ -4,6 +4,7 @@
 # showcasing the function calcHist() from OpenCV.
 '''
 Student Registration Number: 1500921
+12 November, 2015
  ALGORITHM USED
  Adrian Clark described an algorithm in which histograms for Red, Green, and Blue
  where concatenated into one huge histogram. This then allowed for comparison of the
@@ -110,10 +111,10 @@ def get_crop_suggestion(img_name):
 
         centered = i if displacement < c_displacement else centered
 
-    min_x = int(c[0]) - centered[2]
-    min_y = int(c[1]) - centered[2]
-    max_x = c[0] + centered[2]
-    max_y = c[1] + centered[2]
+    min_x = int(centered[0]) - centered[2]
+    min_y = int(centered[1]) - centered[2]
+    max_x = centered[0] + centered[2]
+    max_y = centered[1] + centered[2]
 
     min_x = 0 if min_x < 0 else min_x
     min_y = 0 if min_y < 0 else min_y
