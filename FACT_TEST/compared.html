@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<HEAD>
+<SCRIPT TYPE="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</SCRIPT>
+<SCRIPT TYPE="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</SCRIPT>
+<LINK HREF='jquiz.css' TYPE='text/css' REL='stylesheet' />
+<SCRIPT TYPE="text/javascript"
+ SRC="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></SCRIPT>
+<SCRIPT TYPE="text/javascript" SRC="jquiz.js"></SCRIPT>
+</HEAD>
+<BODY>
+<TABLE ALIGN="center" BORDER="1">
+<TR><TH>Z-score</TH> <TH>class</TH></TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> banana </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> chili </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> gapple </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> gfruit </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> orange </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> pear </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> rapple </TD</TR>
+<TR><TD>   0.00 </TD><TD ALIGN="center"> tomato </TD</TR>
+</TABLE>
+<P ALIGN="center">Comparison of mycbir.res and cbir.res</P>
+
+The comparison in the table was performed using McNemar's test:
+$$Z = \frac{(|N_{sf} - N_{fs}| - 1)}{\sqrt{N_{sf} + N_{fs}}}$$
+where $N_{sf}$ is the number of cases where the first algorithm succeeded
+and the second failed, <EM>etc</EM>.  The $Z$ values in the table are multiplied
+by the sign of $(N_{sf} - N_{fs})$ so that negative values indicate that
+<B>cbir.res</B> out-performed <B>mycbir.res</B>, while positive values
+indicate that <B>mycbir.res</B> out-performed <B>cbir.res</B>.
+</BODY>
+</HTML>

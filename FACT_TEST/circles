@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+# Content-based image retrieval using RGB histograms, and
+# showcasing the function calcHist() from OpenCV.
+
+# The algorithm was described by Adrian Clark and implemented
+# by me on the first Computer Vision assignment.
+
+# The purpose of this assignment is to get familiar with OpenCV
+# for a common computer vision task.
+import cv2, sys, math
+import cv2.cv as cv
+import numpy as np
+
+#------------------------------------------------------------------------------
+# Beginning of program
+params = sys.argv
+if len(params) < 3:
+    print >>sys.stderr, 'Usage:', sys.argv[0], '<probe> <test-images>'
+    sys.exit (1)
+
+# Get the probe file name.
+probe_file = params[1]
+
+# Setup variables that will hold, best match.
+best_img_val = 0
+best_img_file = '?'
+
+# Read probe image and find its histogram.
+im_probe = cv2.imread(probe_file, 0)
+im_probe = cv2.GaussianBlur(im_probe, (5,5),0)
+cimg = cv2.cvtColor(im_probe, cv2.COLOR_GRAY2BGR)
+
+circles = cv2.HoughCircles(im_probe, cv.CV_HOUGH_GRADIENT, 1, 20, param1=50, param2=30,
+        minRadius=0, maxRadius=0)
+
+circles = np.uint16(np.around(circles))
+largest = [0,0,0]
+smallest = [256, 256, 256]
+
+for i in circles[0,:]:
+    largest = i if i[2] > largest[2] else largest
+    smallest = i if i[2] < smallest[2] else smallest
+
+medium = [0,0,0]
+difference = largest[2]*1.0 - smallest[2]
+for i in circles[0,:]:
+    i_relative = abs((i[2] - smallest[2])/difference - .5)
+    m_relative = abs((medium[2] - smallest[2])/difference - .5)
+    medium = i if i_relative <= m_relative else medium
+
+cv2.circle(cimg, (largest[0], largest[1]), largest[2], (0,255,0), 2)
+cv2.circle(cimg,(largest[0],largest[1]),2,(0,0,255),3)
+
+cv2.circle(cimg, (smallest[0], smallest[1]), smallest[2], (0,255,0), 2)
+cv2.circle(cimg,(smallest[0],smallest[1]),2,(0,0,255),3)
+
+cv2.circle(cimg, (medium[0], medium[1]), medium[2], (0,255,0), 2)
+cv2.circle(cimg,(medium[0],medium[1]),2,(0,0,255),3)
+
+min_x = largest[0] - largest[2]
+min_y = largest[1] - largest[2]
+max_x = largest[0] + largest[2]
+max_y = largest[1] + largest[2]
+
+img = cv2.imread(probe_file)
+h, w, c = img.shape
+
+min_x = 0 if min_x < 0 else min_y
+min_y = 0 if min_y < 0 else min_x
+
+max_x = h if max_x > h else max_y
+max_y = w if max_y > w else max_x
+
+cropped = img[min_y:max_y, min_x:max_x]
+cv2.imshow('detected circles', cropped)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+# Main Loop
+# Load image one by one, get their histogram and correlated with the probe hist.
+#for file in params[2:]:
+    #if file != probe_file:
+        #im = cv2.imread(file)
+        ##im_blur = cv2.GaussianBlur(im, (5,5),0)
+        #test_hist = rgb_merged_histogram(im)
+
+        #correlation = calculate_correlation(test_hist, probe_hist)
+
+        #if best_img_val < correlation:
+            #best_img_val = correlation
+            #best_img_file = file
+
+
+# Print to standard output best image file.

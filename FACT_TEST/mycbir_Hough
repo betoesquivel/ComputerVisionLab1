@@ -12,11 +12,45 @@ import cv2, sys, math
 import cv2.cv as cv
 import numpy as np
 
+def get_crop_suggestion(img_name):
+    '''Use the hough transform to identify circles in the img.
+    then find the largest circle identified and crop the image
+    to the smallest rectangle that encloses that circle.
+    Return the cropped image.'''
+    img = cv2.imread(img_name,0)
+    img = cv2.GaussianBlur(img, (5,5), 0)
+
+    # Calculates the Hough Transform
+    # Source: https://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials
+    # /py_imgproc/py_houghcircles/py_houghcircles.html
+    circles = cv2.HoughCircles(img, cv.CV_HOUGH_GRADIENT, 1, 20, param1=50,
+            param2=30, minRadius=0, maxRadius=0)
+
+    largest = [0,0,0]
+
+    for i in circles[0,:]:
+        largest = i if i[2] > largest[2] else largest
+
+    min_x = largest[0] - largest[2]
+    min_y = largest[1] - largest[2]
+    max_x = largest[0] + largest[2]
+    max_y = largest[1] + largest[2]
+
+    img = cv2.imread(img_name)
+    h, w, c = img.shape
+
+    min_x = 0 if min_x < 0 else min_y
+    min_y = 0 if min_y < 0 else min_x
+
+    max_x = h if max_x > h else max_y
+    max_y = w if max_y > w else max_x
+
+    return min_y, max_y, min_x, max_x
+
 def calculate_correlation (h1, h2):
     "Work out the correlation between two histograms."
     sumx = sumy = sumxx = sumyy = sumxy = 0.0
     n = len (h1)
-    print h1, h2, "Lengths of histograms"
     for i in range (0, n):
         v1 = float (h1[i])
         v2 = float (h2[i])
@@ -58,7 +92,9 @@ best_img_val = 0
 best_img_file = '?'
 
 # Read probe image and find its histogram.
+miny, maxy, minx, maxx = get_crop_suggestion(probe_file)
 im_probe = cv2.imread(probe_file)
+im_probe = im_probe[miny:maxy, minx:maxx]
 probe_hist = rgb_merged_histogram(im_probe)
 
 # Main Loop
